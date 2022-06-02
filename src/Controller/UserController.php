@@ -69,7 +69,7 @@ class UserController extends AbstractApiController
         $entityManager->persist($user);
         $entityManager->flush($user);
 
-        return $this->respondSuccess($user);
+        return $this->respondSuccess($user, Response::HTTP_CREATED);
     }
 
     #[Rest\Get('/api/user')]
@@ -89,7 +89,8 @@ class UserController extends AbstractApiController
     public function readAll(UserRepository $repository): Response
     {
         $users = $repository->findAll();
+        $response = $this->buildSerializedResponse($users, ['all']);
 
-        return $this->respondSuccess($users);
+        return $this->respondSuccess($response);
     }
 }
