@@ -44,6 +44,41 @@ class UserController extends AbstractApiController
         return $this->respondSuccess($response);
     }
 
+    #[Rest\Get('/api/user/{id}')]
+    /**
+     * @OA\Tag(name="User")
+     *
+     * @OA\Response(
+     *     response=404,
+     *     description="Resurce not found"
+     * )
+     *
+     * @OA\Response(
+     *     response=403,
+     *     description="No permission to access this resource"
+     * )
+     *
+     * @OA\Response(
+     *     response=200,
+     *     description="Return user data by id",
+     *     @Model(type=User::class, groups={"all"})
+     * )
+     */
+    public function read(User $user): Response
+    {
+        if ($this->isSimpleUser()) {
+            /** @var User $currentUser */
+            $currentUser = $this->getUser();
+            if ($user->getId() !== $currentUser->getId()) {
+                return $this->respondError(null, Response::HTTP_FORBIDDEN);
+            }
+        }
+
+        $response = $this->buildSerializedResponse($user, ['all']);
+
+        return $this->respondSuccess($response);
+    }
+
 
     #[Rest\Post('/api/user')]
     #[IsGranted('ROLE_ADMIN')]
