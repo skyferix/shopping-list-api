@@ -40,8 +40,8 @@ class UserController extends AbstractApiController
                 'roles' => $user->getRoles()
             ]);
         }
-        $response = $this->buildSerializedResponse($user, ['all']);
-        return $this->respondSuccess($response);
+
+        return $this->respondSuccess($user);
     }
 
     #[Rest\Get('/api/user/{id}')]
@@ -74,9 +74,7 @@ class UserController extends AbstractApiController
             }
         }
 
-        $response = $this->buildSerializedResponse($user, ['all']);
-
-        return $this->respondSuccess($response);
+        return $this->respondSuccess($user);
     }
 
 
@@ -132,8 +130,8 @@ class UserController extends AbstractApiController
     public function readAll(UserRepository $repository): Response
     {
         $users = $repository->findAll();
-        $response = $this->buildSerializedResponse($users, ['all']);
 
-        return $this->respondSuccess($response);
+        return $this->respondSuccess($users);
     }
+
 }
