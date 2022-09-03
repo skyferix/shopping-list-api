@@ -36,4 +36,9 @@ abstract class AbstractApiController extends AbstractFOSRestController
             )->build();
         return $serializer->toArray($data, SerializationContext::create()->setGroups($groups));
     }
+
+    protected function isSimpleUser(): bool
+    {
+        return !($this->isGranted('ROLE_SUPER_ADMIN') && $this->isGranted('ROLE_ADMIN'));
+    }
 }
