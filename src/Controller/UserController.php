@@ -34,8 +34,16 @@ class UserController extends AbstractApiController
     {
         /** @var User $user */
         $user = $this->getUser();
-        return $this->respondSuccess($user);
+        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+            return $this->respondSuccess([
+                'email' => $user->getUserIdentifier(),
+                'roles' => $user->getRoles()
+            ]);
+        }
+        $response = $this->buildSerializedResponse($user, ['all']);
+        return $this->respondSuccess($response);
     }
+
 
     #[Rest\Post('/api/user')]
     #[IsGranted('ROLE_ADMIN')]

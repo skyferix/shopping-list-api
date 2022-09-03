@@ -42,6 +42,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Serializer\Groups(groups: ['create'])]
     private ?string $password;
 
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotNull]
+    #[Assert\NotBlank]
+    #[Serializer\Groups(groups: ['all', 'create'])]
+    private ?string $name;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotNull]
+    #[Assert\NotBlank]
+    #[Serializer\Groups(groups: ['all', 'create'])]
+    private ?string $surname;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -98,5 +110,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUsername(): string
     {
         return (string)$this->email;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getSurname(): ?string
+    {
+        return $this->surname;
+    }
+
+    public function setSurname(string $surname): self
+    {
+        $this->surname = $surname;
+
+        return $this;
+    }
+
+    public function getFullName(): string
+    {
+        return $this->name . ' ' . $this->surname;
     }
 }
