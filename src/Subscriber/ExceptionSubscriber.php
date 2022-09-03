@@ -14,8 +14,10 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class ExceptionSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private SerializerBuilder $serializerBuilder, private ExceptionBody $exceptionBody)
-    {
+    public function __construct(
+        private readonly SerializerBuilder $serializerBuilder,
+        private readonly ExceptionBody     $exceptionBody
+    ) {
     }
 
     public static function getSubscribedEvents(): array

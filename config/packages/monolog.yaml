@@ -1,0 +1,14 @@
+monolog:
+    channels: [ dev, deprecation ]
+    handlers:
+        dev_error:
+            type: stream
+            level: error
+            bubble: false
+            path: "%kernel.logs_dir%/dev_error.log"
+            channels: [ 'dev' ]
+        dev_info:
+            type: stream
+            level: info
+            path: "%kernel.logs_dir%/dev_info.log"
+            channels: [ 'dev' ]

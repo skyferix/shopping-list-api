@@ -1,29 +1,59 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Subscriber;
 
+use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class LogSubscriber implements EventSubscriberInterface
 {
-    public static function getSubscribedEvents()
+    public function __construct(private readonly LoggerInterface $devLogger)
+    {
+    }
+
+    public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::REQUEST => 'onKernelRequest',
-            KernelEvents::RESPONSE => 'onKernelResponse'
+            KernelEvents::EXCEPTION => 'onKernelException'
         ];
     }
 
-    public function onKernelRequest(RequestEvent $event)
+    public function onKernelException(ExceptionEvent $event)
     {
-        $test = 1;
+        $this->log($event->getThrowable());
     }
 
-    public function onKernelResponse(ResponseEvent $event)
+    private function log(\Throwable $throwable)
     {
-        $test = 1;
+        $log = [
+            'code' => $throwable->getCode(),
+            'message' => $throwable->getMessage(),
+            'called' => [
+                'file' => $throwable->getTrace()[0]['file'],
+                'line' => $throwable->getTrace()[0]['line'],
+            ],
+            'occurred' => [
+                'file' => $throwable->getFile(),
+                'line' => $throwable->getLine(),
+            ],
+        ];
+
+        if ($throwable->getPrevious() instanceof Exception) {
+            $log += [
+                'previous' => [
+                    'message' => $throwable->getPrevious()->getMessage(),
+                    'exception' => get_class($throwable->getPrevious()),
+                    'file' => $throwable->getPrevious()->getFile(),
+                    'line' => $throwable->getPrevious()->getLine(),
+                ],
+            ];
+        }
+
+        $this->devLogger->error(json_encode($log));
     }
 }
