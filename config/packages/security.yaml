@@ -2,16 +2,24 @@ security:
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     providers:
-        app_user_provider:
+        user:
             entity:
                 class: App\Entity\User
                 property: email
+        admin:
+            memory:
+                users:
+                    root: { password: '$2y$13$/Xlpy/A16MRxUm23jSFUo.KLCPFbOLpPDOriLuTkWKZ1xasSst7pa', roles: [ 'ROLE_ADMIN' ] }
+        users:
+            chain:
+                providers: [ admin, user ]
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         login:
             pattern: ^/api/login
+            provider: users
             stateless: true
             json_login:
                 check_path: /api/login
@@ -20,11 +28,12 @@ security:
                 username_path: email
         api:
             pattern: ^/api
+            provider: users
             stateless: true
             jwt: ~
     access_control:
         - { path: ^/api/doc, roles: PUBLIC_ACCESS }
-        - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
