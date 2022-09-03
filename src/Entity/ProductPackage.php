@@ -21,6 +21,9 @@ class ProductPackage
     #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'productPackages')]
     private ?Product $product;
 
+    #[ORM\ManyToOne(targetEntity: ProductList::class, inversedBy: 'productPackage')]
+    private ?ProductList $productList;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -46,6 +49,18 @@ class ProductPackage
     public function setProduct(?Product $product): self
     {
         $this->product = $product;
+
+        return $this;
+    }
+
+    public function getProductList(): ?ProductList
+    {
+        return $this->productList;
+    }
+
+    public function setProductList(?ProductList $productList): self
+    {
+        $this->productList = $productList;
 
         return $this;
     }

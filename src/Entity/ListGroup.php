@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Repository\ProductCategoryRepository;
+use App\Repository\ListGroupRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ProductCategoryRepository::class)]
-class ProductCategory
+#[ORM\Entity(repositoryClass: ListGroupRepository::class)]
+class ListGroup
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -20,12 +20,12 @@ class ProductCategory
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $name;
 
-    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Product::class)]
-    private Collection $products;
+    #[ORM\OneToMany(mappedBy: 'listGroup', targetEntity: ProductList::class)]
+    private Collection $lists;
 
     public function __construct()
     {
-        $this->products = new ArrayCollection();
+        $this->lists = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -45,26 +45,26 @@ class ProductCategory
         return $this;
     }
 
-    public function getProducts(): Collection
+    public function getLists(): Collection
     {
-        return $this->products;
+        return $this->lists;
     }
 
-    public function addProduct(Product $product): self
+    public function addList(ProductList $list): self
     {
-        if (!$this->products->contains($product)) {
-            $this->products[] = $product;
-            $product->setCategory($this);
+        if (!$this->lists->contains($list)) {
+            $this->lists[] = $list;
+            $list->setListGroup($this);
         }
 
         return $this;
     }
 
-    public function removeProduct(Product $product): self
+    public function removeList(ProductList $list): self
     {
-        if ($this->products->removeElement($product)) {
-            if ($product->getCategory() === $this) {
-                $product->setCategory(null);
+        if ($this->lists->removeElement($list)) {
+            if ($list->getListGroup() === $this) {
+                $list->setListGroup(null);
             }
         }
 
