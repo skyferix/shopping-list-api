@@ -9,7 +9,7 @@ security:
         admin:
             memory:
                 users:
-                    root@root.com: { password: '$2y$13$/Xlpy/A16MRxUm23jSFUo.KLCPFbOLpPDOriLuTkWKZ1xasSst7pa', roles: [ 'ROLE_ADMIN' ] }
+                    root@root.com: { password: '$2y$13$/Xlpy/A16MRxUm23jSFUo.KLCPFbOLpPDOriLuTkWKZ1xasSst7pa', roles: [ 'ROLE_SUPER_ADMIN', 'ROLE_ADMIN' ] }
         users:
             chain:
                 providers: [ admin, user ]
