@@ -6,30 +6,41 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use JMS\Serializer\Annotation as Serializer;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
+#[UniqueEntity('email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Serializer\Groups(groups: ['all'])]
     private ?int $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[Assert\NotNull]
+    #[Assert\NotBlank]
+    #[Assert\Email]
+    #[Serializer\Groups(groups: ['all', 'create'])]
     private ?string $email;
 
     #[ORM\Column(type: 'json')]
     #[Serializer\Type('array<string>')]
+    #[Serializer\Groups(groups: ['all'])]
     private array $roles = [];
 
-    #[Serializer\Exclude]
     #[ORM\Column(type: 'string')]
-    private string $password;
+    #[Assert\NotNull]
+    #[Assert\NotBlank]
+    #[Serializer\Groups(groups: ['create'])]
+    private ?string $password;
 
     public function getId(): ?int
     {
