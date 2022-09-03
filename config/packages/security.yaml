@@ -9,7 +9,7 @@ security:
         admin:
             memory:
                 users:
-                    root: { password: '$2y$13$/Xlpy/A16MRxUm23jSFUo.KLCPFbOLpPDOriLuTkWKZ1xasSst7pa', roles: [ 'ROLE_ADMIN' ] }
+                    root@root.com: { password: '$2y$13$/Xlpy/A16MRxUm23jSFUo.KLCPFbOLpPDOriLuTkWKZ1xasSst7pa', roles: [ 'ROLE_ADMIN' ] }
         users:
             chain:
                 providers: [ admin, user ]
@@ -41,6 +41,6 @@ when@test:
         password_hashers:
             Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
                 algorithm: auto
-                cost: 4 # Lowest possible value for bcrypt
-                time_cost: 3 # Lowest possible value for argon
-                memory_cost: 10 # Lowest possible value for argon
+                cost: 4
+                time_cost: 3
+                memory_cost: 10
